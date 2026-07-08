@@ -1,4 +1,5 @@
 import express, { response } from 'express';
+import { logger } from './middlewares/logger.js';
 
 let allCookies = [
   {
@@ -40,6 +41,10 @@ let allCookies = [
 
 const app = express();
 const PORT = 3000;
+
+app.use(express.static('public'));
+
+app.use(logger);
 
 app.get('/', (request, response) => {
   response.send('Welcome to our 🍪 Cookie Shop!');
