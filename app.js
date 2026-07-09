@@ -1,4 +1,5 @@
 import express, { response } from 'express';
+import path from 'path';
 import { logger } from './middlewares/logger.js';
 
 let allCookies = [
@@ -51,7 +52,7 @@ app.use('/assets', express.static('public'));
 app.use(logger);
 
 app.get('/', (request, response) => {
-  response.send('Welcome to our 🍪 Cookie Shop!');
+  response.sendFile(path.resolve('./public/landing.html'));
 });
 
 app.get('/contact', (request, response) => {
