@@ -44,7 +44,7 @@ const app = express();
 const PORT = 3000;
 
 // Path to public folder for servng static files/pages
-// app.use(express.static('public'));
+app.use(express.static('public'));
 
 // Using virtual path with app.use middleware
 app.use('/assets', express.static('public'));
