@@ -51,15 +51,22 @@ app.use('/assets', express.static('public'));
 
 app.use(logger);
 
+app.use(express.urlencoded({ extended: true }));
+
 app.get('/', (request, response) => {
   response.sendFile(path.resolve('./public/landing.html'));
 });
 
+// app.get('/contact', (request, response) => {
+//   response.send('Reach out to us if you have any questions');
+// });
+
 app.get('/contact', (request, response) => {
-  response.send('Reach out to us if you have any questions');
+  response.sendFile(path.resolve('./public/contact.html'));
 });
 
 app.post('/contact', (request, response) => {
+  console.log('Contact form submission: ', request.body);
   response.send('Thank you for your message. We will be in touch soon.');
 });
 
