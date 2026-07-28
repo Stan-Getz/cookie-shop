@@ -1,4 +1,4 @@
-import express, { response } from 'express';
+import express from 'express';
 import path from 'path';
 import { logger } from './middlewares/logger.js';
 
@@ -106,6 +106,40 @@ app.get('/cookies/:slug', (request, response) => {
     <p><strong>Description:</strong> ${foundCookie.description}</p> 
     <p><strong>Price:</strong> ${foundCookie.price}</p>`,
   );
+});
+
+app.get('/search', (request, response) => {
+  const searchQuery = request.query.q;
+
+  if (searchQuery) {
+    response.send(`
+      <h1>You searched for: "${searchQuery}"</h1>
+      Wanna search again?
+      <button><a href="/search">Yes</a></button>`);
+  } else {
+    response.send(`
+      <h2>You can search for something, if you want</h2>
+      <form action="/search" method="get">
+      <label for="q">Let's search for soemthing:</label>
+      <input type="text" name="q" id="q"/>
+      <button type="submit">Search</button>
+      </form>
+
+      `);
+  }
+});
+
+app.get('/api/v1/cookies', (request, response) => {
+  response.json({
+    allCookies,
+  });
+});
+
+app.get('/api/v1/cookies/:slug', (request, response) => {
+  const cookieSlug = request.params.slug;
+  const foundCookie = allCookies.find((item) => item.id === cookieSlug);
+
+  response.json({ foundCookie });
 });
 
 app.listen(PORT, () => {
