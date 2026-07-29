@@ -3,6 +3,12 @@ import path from 'path';
 import { logger } from './middlewares/logger.js';
 import mongoose from 'mongoose';
 import { error } from 'console';
+import { request } from 'http';
+
+const cookieConn = mongoose.createConnection(
+  'mongodb://127.0.0.1:27017/cookie-shop',
+);
+cookieConn.on('connected', () => console.log('Connected to DB: cookie-shop'));
 
 const cookieSchema = new mongoose.Schema({
   slug: { type: String, unique: true, required: true },
@@ -11,7 +17,7 @@ const cookieSchema = new mongoose.Schema({
   isInStock: { type: Boolean, default: true, required: true },
 });
 
-const Cookie = mongoose.model('Cookie', cookieSchema);
+const Cookie = cookieConn.model('Cookie', cookieSchema);
 
 let allCookies = [
   {
@@ -56,7 +62,7 @@ const PORT = 3000;
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/cookie-shop')
-  .then(() => console.log('Database connected'))
+  .then(() => console.log('Connected to DB:', mongoose.connection.name))
   .catch((error) => console.log(error));
 
 app.set('view engine', 'ejs');
@@ -114,6 +120,10 @@ app.get('/cookies', (request, response) => {
 //   );
 // });
 
+app.get('/cookies/new', (request, response) => {
+  response.render('cookies/new');
+});
+
 app.get('/cookies/:slug', (request, response) => {
   const cookieName = request.params.slug;
 
@@ -128,6 +138,23 @@ app.get('/cookies/:slug', (request, response) => {
     <p><strong>Description:</strong> ${foundCookie.description}</p> 
     <p><strong>Price:</strong> ${foundCookie.price}</p>`,
   );
+});
+
+app.post('/cookies', async (request, response) => {
+  try {
+    const cookie = new Cookie({
+      slug: request.body.slug,
+      name: request.body.name,
+      priceInCents: request.body.priceInCents,
+    });
+    await cookie.save();
+
+    console.log('✅ Cookie saved to cookie-shop');
+    response.send('Cookie Created');
+  } catch (error) {
+    console.error(error);
+    response.send('Error: the cookie could not be created');
+  }
 });
 
 app.get('/search', (request, response) => {
@@ -146,7 +173,6 @@ app.get('/search', (request, response) => {
       <input type="text" name="q" id="q"/>
       <button type="submit">Search</button>
       </form>
-
       `);
   }
 });
