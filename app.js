@@ -43,6 +43,8 @@ let allCookies = [
 const app = express();
 const PORT = 3000;
 
+app.set('view engine', 'ejs');
+
 // Path to public folder for servng static files/pages
 app.use(express.static('public'));
 
@@ -53,8 +55,12 @@ app.use(logger);
 
 app.use(express.urlencoded({ extended: true }));
 
+// app.get('/', (request, response) => {
+//   response.sendFile(path.resolve('./public/landing.html'));
+// });
+
 app.get('/', (request, response) => {
-  response.sendFile(path.resolve('./public/landing.html'));
+  response.render('index');
 });
 
 // app.get('/contact', (request, response) => {
