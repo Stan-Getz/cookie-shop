@@ -11,6 +11,8 @@ const cookieSchema = new mongoose.Schema({
   isInStock: Boolean,
 });
 
+const Cookie = mongoose.model('Cookie', cookieSchema);
+
 let allCookies = [
   {
     id: 'chocolate-chip',
