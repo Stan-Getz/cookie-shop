@@ -6,9 +6,9 @@ import { error } from 'console';
 
 const cookieSchema = new mongoose.Schema({
   slug: { type: String, unique: true, required: true },
-  name: String,
-  priceInCents: Number,
-  isInStock: Boolean,
+  name: { type: String, required: true },
+  priceInCents: { type: Number, required: true },
+  isInStock: { type: Boolean, default: true, required: true },
 });
 
 const Cookie = mongoose.model('Cookie', cookieSchema);
