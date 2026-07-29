@@ -19,6 +19,15 @@ const cookieSchema = new mongoose.Schema({
 
 const Cookie = cookieConn.model('Cookie', cookieSchema);
 
+const newsSchema = new mongoose.Schema({
+  slug: { type: String, unique: true, required: true },
+  name: { type: String, unique: true, required: true },
+  dateOfCreation: { type: Date, default: Date.now, required: true },
+  text: { type: String, required: true },
+});
+
+const News = cookieConn.model('News', newsSchema);
+
 let allCookies = [
   {
     id: 'chocolate-chip',
@@ -154,6 +163,34 @@ app.post('/cookies', async (request, response) => {
   } catch (error) {
     console.error(error);
     response.send('Error: the cookie could not be created');
+  }
+});
+
+app.get('/news', (request, response) => {
+  response.send('This is the page about news');
+});
+
+app.get('/news/new', (request, response) => {
+  response.render('news/new');
+});
+
+app.post('/news', async (request, response) => {
+  console.log('RECEIVED BODY', request.body);
+
+  try {
+    const news = new News({
+      slug: request.body.slug,
+      name: request.body.name,
+      dateOfCreation: request.body.dateOfCreation,
+      text: request.body.text,
+    });
+    await news.save();
+
+    console.log('News saved to cookie-shop');
+    response.send('News created');
+  } catch (error) {
+    console.error(error);
+    response.send('Error: the news could not be created');
   }
 });
 
