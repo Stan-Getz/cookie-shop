@@ -1,6 +1,15 @@
 import express from 'express';
 import path from 'path';
 import { logger } from './middlewares/logger.js';
+import mongoose from 'mongoose';
+import { error } from 'console';
+
+const cookieSchema = new mongoose.Schema({
+  slug: { type: String, unique: true, required: true },
+  name: String,
+  priceInCents: Number,
+  isInStock: Boolean,
+});
 
 let allCookies = [
   {
@@ -42,6 +51,11 @@ let allCookies = [
 
 const app = express();
 const PORT = 3000;
+
+mongoose
+  .connect('mongodb://127.0.0.1:27017/cookie-shop')
+  .then(() => console.log('Database connected'))
+  .catch((error) => console.log(error));
 
 app.set('view engine', 'ejs');
 
