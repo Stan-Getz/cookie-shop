@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cookie Shop</title>
+  </head>
+  <body>
+    <main>
+      <h1><%= cookie.name %></h1>
+      <p><%= cookie.description %></p>
+      <p>
+        <strong>Price: <%= readablePrice(cookie.priceInCents) %></strong>
+      </p>
+      <% if(cookie.isInStock) { %>
+        <p style="color: green;">In Stock!</p>
+      <% } else { %>
+        <p style="color: tomato">Temporarily sold out!</p>
+        <% } %>
+    </main>
+  </body>
+</html>
