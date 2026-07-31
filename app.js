@@ -5,10 +5,9 @@ import mongoose from 'mongoose';
 import { error } from 'console';
 import { request } from 'http';
 import { readablePrice } from './helpers/cookie-views.js';
+import 'dotenv/config';
 
-const cookieConn = mongoose.createConnection(
-  'mongodb://127.0.0.1:27017/cookie-shop',
-);
+const cookieConn = mongoose.createConnection(process.env.MONGODB_URI);
 cookieConn.on('connected', () => console.log('Connected to DB: cookie-shop'));
 
 const cookieSchema = new mongoose.Schema({
@@ -69,7 +68,6 @@ let allCookies = [
 ];
 
 const app = express();
-const PORT = 3000;
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/cookie-shop')
@@ -294,6 +292,6 @@ app.get('/api/v1/cookies/:slug', (request, response) => {
   response.json({ foundCookie });
 });
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
   console.log(`Started server on port ${PORT}`);
 });
