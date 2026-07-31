@@ -293,5 +293,5 @@ app.get('/api/v1/cookies/:slug', (request, response) => {
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`Started server on port ${PORT}`);
+  console.log(`Started server on port ${process.env.PORT}`);
 });
