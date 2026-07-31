@@ -14,6 +14,7 @@ cookieConn.on('connected', () => console.log('Connected to DB: cookie-shop'));
 const cookieSchema = new mongoose.Schema({
   slug: { type: String, unique: true, required: true },
   name: { type: String, required: true },
+  description: { type: String, required: true },
   priceInCents: { type: Number, required: true },
   isInStock: { type: Boolean, default: true, required: true },
 });
@@ -121,7 +122,7 @@ app.get('/about', (request, response) => {
 // });
 
 app.get('/cookies', async (request, response) => {
-  const cookies = await Cookie.find();
+  const cookies = await Cookie.find({}).exec();
 
   response.render('cookies/index', {
     cookies: cookies,
