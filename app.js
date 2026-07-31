@@ -122,12 +122,21 @@ app.get('/about', (request, response) => {
 // });
 
 app.get('/cookies', async (request, response) => {
-  const cookies = await Cookie.find({}).exec();
+  try {
+    const cookies = await Cookie.find({}).exec();
+    // const cookies = await Cookie.find({ priceInCents: { $gte: 200 } }).exec();
 
-  response.render('cookies/index', {
-    cookies: cookies,
-    readablePrice: readablePrice,
-  });
+    response.render('cookies/index', {
+      cookies: cookies,
+      readablePrice: readablePrice,
+    });
+  } catch (error) {
+    console.error(error);
+    response.render('cookies/index', {
+      cookies: [],
+      readablePrice: readablePrice,
+    });
+  }
 });
 
 // app.get('/cookies/:slug', (request, response) => {
@@ -141,26 +150,32 @@ app.get('/cookies/new', (request, response) => {
 });
 
 app.get('/cookies/:slug', async (request, response) => {
-  const cookieSlug = request.params.slug;
+  try {
+    const cookieSlug = request.params.slug;
 
-  // const foundCookie = allCookies.find((item) => {
-  //   if (item.id === cookieName) return true;
-  // });
+    // const foundCookie = allCookies.find((item) => {
+    //   if (item.id === cookieName) return true;
+    // });
 
-  // const foundCookie = allCookies.find((item) => item.id === cookieName);
+    // const foundCookie = allCookies.find((item) => item.id === cookieName);
 
-  // response.send(
-  //   `<h3>You chose the cookie with the name of <em>${foundCookie.cookie}</em></h3>
-  //   <p><strong>Description:</strong> ${foundCookie.description}</p>
-  //   <p><strong>Price:</strong> ${foundCookie.price}</p>`,
-  // );
+    // response.send(
+    //   `<h3>You chose the cookie with the name of <em>${foundCookie.cookie}</em></h3>
+    //   <p><strong>Description:</strong> ${foundCookie.description}</p>
+    //   <p><strong>Price:</strong> ${foundCookie.price}</p>`,
+    // );
 
-  const cookie = await Cookie.findOne({ slug: cookieSlug });
+    const cookie = await Cookie.findOne({ slug: cookieSlug });
+    if (!cookie) throw new Error('Cookie not found');
 
-  response.render('cookies/show', {
-    cookie: cookie,
-    readablePrice: readablePrice,
-  });
+    response.render('cookies/show', {
+      cookie: cookie,
+      readablePrice: readablePrice,
+    });
+  } catch (erorr) {
+    console.error(error);
+    response.status(404).send("Could not find the cookie you're looking for.");
+  }
 });
 
 app.post('/cookies', async (request, response) => {
