@@ -4,6 +4,7 @@ import { logger } from './middlewares/logger.js';
 import mongoose from 'mongoose';
 import { error } from 'console';
 import { request } from 'http';
+import { readablePrice } from './helpers/cookie-views.js';
 
 const cookieConn = mongoose.createConnection(
   'mongodb://127.0.0.1:27017/cookie-shop',
@@ -119,8 +120,13 @@ app.get('/about', (request, response) => {
 //   response.send(`You chose the cookie with the ID of ${cookieId}`);
 // });
 
-app.get('/cookies', (request, response) => {
-  response.send('This is our cookie collection. Pick the ones you like most.');
+app.get('/cookies', async (request, response) => {
+  const cookies = await Cookie.find();
+
+  response.render('cookies/index', {
+    cookies: cookies,
+    readablePrice: readablePrice,
+  });
 });
 
 // app.get('/cookies/:slug', (request, response) => {
@@ -133,20 +139,27 @@ app.get('/cookies/new', (request, response) => {
   response.render('cookies/new');
 });
 
-app.get('/cookies/:slug', (request, response) => {
-  const cookieName = request.params.slug;
+app.get('/cookies/:slug', async (request, response) => {
+  const cookieSlug = request.params.slug;
 
   // const foundCookie = allCookies.find((item) => {
   //   if (item.id === cookieName) return true;
   // });
 
-  const foundCookie = allCookies.find((item) => item.id === cookieName);
+  // const foundCookie = allCookies.find((item) => item.id === cookieName);
 
-  response.send(
-    `<h3>You chose the cookie with the name of <em>${foundCookie.cookie}</em></h3> 
-    <p><strong>Description:</strong> ${foundCookie.description}</p> 
-    <p><strong>Price:</strong> ${foundCookie.price}</p>`,
-  );
+  // response.send(
+  //   `<h3>You chose the cookie with the name of <em>${foundCookie.cookie}</em></h3>
+  //   <p><strong>Description:</strong> ${foundCookie.description}</p>
+  //   <p><strong>Price:</strong> ${foundCookie.price}</p>`,
+  // );
+
+  const cookie = await Cookie.findOne({ slug: cookieSlug });
+
+  response.render('cookies/show', {
+    cookie: cookie,
+    readablePrice: readablePrice,
+  });
 });
 
 app.post('/cookies', async (request, response) => {
