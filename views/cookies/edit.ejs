@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <main>
+      <h2>Edit the cookie</h2>
+
+      <form action="/cookies/<%= cookie.slug %>" method="POST">
+        <input
+          type="text"
+          value="<%= cookie.name %>"
+          name="name"
+          placeholder="name"
+          required
+        /><br />
+        <input
+          type="text"
+          value="<%= cookie.slug %>"
+          name="slug"
+          placeholder="slug"
+          required
+        /><br />
+        <textarea
+          type="text"
+          value="<%= cookie.description %>"
+          name="description"
+          placeholder="description"
+          required
+        ></textarea>
+        <br />
+        <input
+          type="number"
+          value="<%= cookie.priceInCents %>"
+          name="priceInCents"
+          placeholder="price in cents"
+          required
+          min="0"
+          step="1"
+        /><br />
+        <button>Save</button>
+      </form>
+    </main>
+  </body>
+</html>

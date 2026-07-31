@@ -151,7 +151,7 @@ app.get('/cookies/new', (request, response) => {
 
 app.get('/cookies/:slug', async (request, response) => {
   try {
-    const cookieSlug = request.params.slug;
+    const slug = request.params.slug;
 
     // const foundCookie = allCookies.find((item) => {
     //   if (item.id === cookieName) return true;
@@ -165,7 +165,7 @@ app.get('/cookies/:slug', async (request, response) => {
     //   <p><strong>Price:</strong> ${foundCookie.price}</p>`,
     // );
 
-    const cookie = await Cookie.findOne({ slug: cookieSlug });
+    const cookie = await Cookie.findOne({ slug: slug });
     if (!cookie) throw new Error('Cookie not found');
 
     response.render('cookies/show', {
@@ -175,6 +175,44 @@ app.get('/cookies/:slug', async (request, response) => {
   } catch (erorr) {
     console.error(error);
     response.status(404).send("Could not find the cookie you're looking for.");
+  }
+});
+
+app.post('/cookies/:slug', async (request, response) => {
+  try {
+    const slug = request.params.slug;
+    const cookie = await Cookie.findOneAndUpdate({ slug: slug }, request.body, {
+      new: true,
+    });
+
+    response.redirect(`/cookies/${cookie.slug}`);
+  } catch (error) {
+    console.error(error);
+    response.send('Error: The cookie could not be updated.');
+  }
+});
+
+app.get('/cookies/:slug/edit', async (request, response) => {
+  try {
+    const slug = request.params.slug;
+    const cookie = await Cookie.findOne({ slug: slug });
+    if (!cookie) throw new Error('Cookie not found');
+
+    response.render('cookies/edit', { cookie: cookie });
+  } catch (erorr) {
+    console.error(error);
+    response.status(404).send("Could not find the cookie you're looking for.");
+  }
+});
+
+app.get('/cookies/:slug/delete', async (request, response) => {
+  try {
+    await Cookie.findOneAndDelete({ slug: request.params.slug });
+
+    response.redirect('/cookies');
+  } catch (error) {
+    console.error(error);
+    response.send('Error: No cookie was deleted.');
   }
 });
 
@@ -250,8 +288,8 @@ app.get('/api/v1/cookies', (request, response) => {
 });
 
 app.get('/api/v1/cookies/:slug', (request, response) => {
-  const cookieSlug = request.params.slug;
-  const foundCookie = allCookies.find((item) => item.id === cookieSlug);
+  const slug = request.params.slug;
+  const foundCookie = allCookies.find((item) => item.id === slug);
 
   response.json({ foundCookie });
 });
